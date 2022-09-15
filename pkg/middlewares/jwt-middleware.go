@@ -3,7 +3,7 @@ package middlewares
 import (
 	"net/http"
 
-	"ginn/pkg/common/authorization"
+	"voting/pkg/common/authorization"
 
 	"github.com/gin-gonic/gin"
 )

@@ -1,4 +1,4 @@
-module ginn
+module voting
 
 go 1.19
 

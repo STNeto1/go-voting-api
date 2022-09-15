@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"ginn/pkg/common/authorization"
-	"ginn/pkg/common/error"
+	"voting/pkg/common/authorization"
+	"voting/pkg/common/error"
 
 	"github.com/gin-gonic/gin"
 )

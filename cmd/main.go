@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"ginn/pkg/auth"
-	"ginn/pkg/common/db"
-	"ginn/pkg/user"
 	"os"
+	"voting/pkg/auth"
+	"voting/pkg/common/db"
+	"voting/pkg/user"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"

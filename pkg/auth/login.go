@@ -5,9 +5,9 @@ import (
 
 	"golang.org/x/crypto/bcrypt"
 
-	"ginn/pkg/common/authorization"
-	"ginn/pkg/common/error"
-	"ginn/pkg/common/models"
+	"voting/pkg/common/authorization"
+	"voting/pkg/common/error"
+	"voting/pkg/common/models"
 
 	"github.com/gin-gonic/gin"
 )

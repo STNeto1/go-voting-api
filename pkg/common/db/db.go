@@ -3,7 +3,7 @@ package db
 import (
 	"log"
 
-	"ginn/pkg/common/models"
+	"voting/pkg/common/models"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
