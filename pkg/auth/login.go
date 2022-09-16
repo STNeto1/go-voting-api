@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"errors"
 	"net/http"
 
 	"golang.org/x/crypto/bcrypt"
@@ -10,10 +11,11 @@ import (
 	"voting/pkg/common/models"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 )
 
 type LoginRequestBody struct {
-	Email    string `json:"email" binding:"required"`
+	Email    string `json:"email" binding:"required,email"`
 	Password string `json:"password" binding:"required"`
 }
 
@@ -21,9 +23,17 @@ func (h handler) Login(c *gin.Context) {
 	body := LoginRequestBody{}
 
 	// getting request's body
-	if err := c.BindJSON(&body); err != nil {
-		c.JSON(http.StatusBadRequest, error.BadRequest("Invalid request body"))
-		return
+	if err := c.ShouldBindJSON(&body); err != nil {
+		var ve validator.ValidationErrors
+		if errors.As(err, &ve) {
+			out := make([]error.ApiError, len(ve))
+			for i, fe := range ve {
+				out[i] = error.ApiError{Param: fe.Field(), Message: error.MsgForTag(fe)}
+			}
+
+			c.JSON(http.StatusBadRequest, error.BadValidation(out))
+			return
+		}
 	}
 
 	user := models.User{}
