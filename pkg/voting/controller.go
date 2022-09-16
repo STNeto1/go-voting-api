@@ -20,6 +20,7 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 	routes.GET("/user", middlewares.AuthorizeJWT(), h.GetUserVotings)
 	routes.GET("/", h.GetVotings)
 	routes.POST("/", middlewares.AuthorizeJWT(), h.CreateVoting)
+	routes.POST("/vote", h.VoteOption)
 	routes.GET("/:id", h.GetVoting)
 	routes.DELETE("/:id", middlewares.AuthorizeJWT(), h.DeleteVoting)
 
