@@ -37,7 +37,7 @@ func (h handler) VoteOption(c *gin.Context) {
 	}
 
 	var voting models.Voting
-	if err := h.DB.Preload("Options").First(&voting, "id = ?", body.Voting).Error; err != nil {
+	if err := h.DB.First(&voting, "id = ?", body.Voting).Error; err != nil {
 		c.JSON(http.StatusNotFound, error.NotFound("Voting not found"))
 		return
 	}
@@ -53,7 +53,7 @@ func (h handler) VoteOption(c *gin.Context) {
 	}
 
 	var option models.VotingOption
-	if err := h.DB.First(&option, "id = ?", body.Option).Error; err != nil {
+	if err := h.DB.First(&option, "id = ? AND voting_id = ?", body.Option, body.Voting).Error; err != nil {
 		c.JSON(http.StatusNotFound, error.NotFound("Option not found"))
 		return
 	}
