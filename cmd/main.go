@@ -6,6 +6,7 @@ import (
 	"voting/pkg/auth"
 	"voting/pkg/common/db"
 	"voting/pkg/user"
+	"voting/pkg/voting"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
@@ -30,6 +31,8 @@ func main() {
 
 	auth.RegisterRoutes(r, h)
 	user.RegisterRoutes(r, h)
+	voting.RegisterRoutes(r, h)
+
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "Gin API!",
