@@ -39,11 +39,7 @@ func (h handler) CreateVoting(c *gin.Context) {
 
 	}
 
-	user, err := authorization.ExtractUser(c)
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, error.Unauthorized("Unauthorized"))
-		return
-	}
+	user := authorization.ExtractUser(c)
 
 	start, _ := time.Parse("2006-01-02", body.Start)
 	end, _ := time.Parse("2006-01-02", body.End)

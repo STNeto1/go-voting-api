@@ -12,11 +12,7 @@ import (
 
 func (h handler) DeleteVoting(c *gin.Context) {
 
-	user, err := authorization.ExtractUser(c)
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, error.Unauthorized("Unauthorized"))
-		return
-	}
+	user := authorization.ExtractUser(c)
 
 	id := c.Param("id")
 

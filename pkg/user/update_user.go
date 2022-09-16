@@ -1,7 +1,6 @@
 package user
 
 import (
-	"fmt"
 	"net/http"
 
 	"voting/pkg/common/authorization"
@@ -19,13 +18,7 @@ type UpdateUserRequestBody struct {
 }
 
 func (h handler) UpdateUser(c *gin.Context) {
-	user, err := authorization.ExtractUser(c)
-
-	if err != nil {
-		fmt.Println(err)
-		c.JSON(http.StatusUnauthorized, error.Unauthorized("Unauthorized"))
-		return
-	}
+	user := authorization.ExtractUser(c)
 
 	body := UpdateUserRequestBody{}
 

@@ -2,6 +2,7 @@ package authorization
 
 import (
 	"fmt"
+	"net/http"
 	"strings"
 	"time"
 
@@ -83,20 +84,26 @@ func ExtractTokenID(c *gin.Context) (string, error) {
 	return "", nil
 }
 
-func ExtractUser(c *gin.Context) (models.User, error) {
+func ExtractUser(c *gin.Context) models.User {
 	h := db.Init(viper.Get("DB_URL").(string))
 	id, err := ExtractTokenID(c)
 
 	if err != nil {
-		return models.User{}, err
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"statusCode": http.StatusUnauthorized, "message": "Unauthorized"})
+		c.Abort()
+
+		return models.User{}
 	}
 
 	user := models.User{}
 	h.First(&user, "id = ?", id)
 
 	if user.ID == "" {
-		return models.User{}, err
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"statusCode": http.StatusUnauthorized, "message": "Unauthorized"})
+		c.Abort()
+
+		return models.User{}
 	}
 
-	return user, nil
+	return user
 }

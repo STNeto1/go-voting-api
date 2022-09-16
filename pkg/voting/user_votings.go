@@ -1,7 +1,6 @@
 package voting
 
 import (
-	"fmt"
 	"net/http"
 
 	"voting/pkg/common/authorization"
@@ -12,12 +11,7 @@ import (
 )
 
 func (h handler) GetUserVotings(c *gin.Context) {
-	user, err := authorization.ExtractUser(c)
-	if err != nil {
-		fmt.Println(err)
-		c.JSON(http.StatusUnauthorized, error.Unauthorized("Unauthorized"))
-		return
-	}
+	user := authorization.ExtractUser(c)
 
 	var votings []models.Voting
 
