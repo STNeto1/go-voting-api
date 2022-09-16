@@ -42,6 +42,11 @@ func (h handler) VoteOption(c *gin.Context) {
 		return
 	}
 
+	if time.Now().Before(voting.Start) {
+		c.JSON(http.StatusBadRequest, error.BadRequest("Voting has not started"))
+		return
+	}
+
 	if time.Now().After(voting.End) {
 		c.JSON(http.StatusBadRequest, error.BadRequest("Voting has ended"))
 		return
