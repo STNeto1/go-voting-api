@@ -16,6 +16,7 @@ type Voting struct {
 	User      User           `json:"-"`
 	CreatedAt time.Time      `json:"created_at"`
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
+	Options   []VotingOption `json:"options"`
 }
 
 func (voting *Voting) BeforeCreate(tx *gorm.DB) (err error) {

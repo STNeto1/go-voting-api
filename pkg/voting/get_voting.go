@@ -13,7 +13,7 @@ func (h handler) GetVoting(c *gin.Context) {
 	id := c.Param("id")
 
 	var voting models.Voting
-	if err := h.DB.First(&voting, "id = ?", id).Error; err != nil {
+	if err := h.DB.Preload("Options").First(&voting, "id = ?", id).Error; err != nil {
 		c.JSON(http.StatusNotFound, error.NotFound("Voting not found"))
 		return
 	}
