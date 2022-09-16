@@ -10,6 +10,10 @@ func BadRequest(message string) interface{} {
 	return gin.H{"statusCode": http.StatusBadRequest, "message": message}
 }
 
+func BadValidation(errors []ApiError) interface{} {
+	return gin.H{"statusCode": http.StatusBadRequest, "errors": errors}
+}
+
 func InternalServerError(message string) interface{} {
 	return gin.H{"statusCode": http.StatusInternalServerError, "message": message}
 }
