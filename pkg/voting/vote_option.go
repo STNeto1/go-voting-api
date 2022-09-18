@@ -61,5 +61,10 @@ func (h handler) VoteOption(c *gin.Context) {
 	option.Votes++
 	h.DB.Model(&option).Update("votes", option.Votes)
 
+	h.Pusher.Trigger(voting.ID, "vote", gin.H{
+		"option": option.ID,
+		"votes":  option.Votes,
+	})
+
 	c.JSON(http.StatusCreated, gin.H{"message": "Voted successfully"})
 }
