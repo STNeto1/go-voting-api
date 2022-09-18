@@ -7,7 +7,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 
 	"voting/pkg/common/authorization"
-	"voting/pkg/common/error"
+	"voting/pkg/common/exceptions"
 	"voting/pkg/common/models"
 
 	"github.com/gin-gonic/gin"
@@ -26,12 +26,12 @@ func (h handler) Login(c *gin.Context) {
 	if err := c.ShouldBindJSON(&body); err != nil {
 		var ve validator.ValidationErrors
 		if errors.As(err, &ve) {
-			out := make([]error.ApiError, len(ve))
+			out := make([]exceptions.ApiError, len(ve))
 			for i, fe := range ve {
-				out[i] = error.ApiError{Param: fe.Field(), Message: error.MsgForTag(fe)}
+				out[i] = exceptions.ApiError{Param: fe.Field(), Message: exceptions.MsgForTag(fe)}
 			}
 
-			c.JSON(http.StatusBadRequest, error.BadValidation(out))
+			c.JSON(http.StatusBadRequest, exceptions.BadValidation(out))
 			return
 		}
 	}
@@ -39,13 +39,13 @@ func (h handler) Login(c *gin.Context) {
 	user := models.User{}
 	h.DB.First(&user, "email = ?", body.Email)
 	if user.ID == "" {
-		c.JSON(http.StatusBadRequest, error.BadRequest("Invalid credentials"))
+		c.JSON(http.StatusBadRequest, exceptions.BadRequest("Invalid credentials"))
 		return
 	}
 
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(body.Password))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, error.BadRequest("Invalid credentials"))
+		c.JSON(http.StatusBadRequest, exceptions.BadRequest("Invalid credentials"))
 		return
 	}
 

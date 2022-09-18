@@ -3,7 +3,7 @@ package voting
 import (
 	"net/http"
 
-	"voting/pkg/common/error"
+	"voting/pkg/common/exceptions"
 	"voting/pkg/common/models"
 
 	"github.com/gin-gonic/gin"
@@ -14,7 +14,7 @@ func (h handler) GetVoting(c *gin.Context) {
 
 	var voting models.Voting
 	if err := h.DB.Preload("Options").First(&voting, "id = ?", id).Error; err != nil {
-		c.JSON(http.StatusNotFound, error.NotFound("Voting not found"))
+		c.JSON(http.StatusNotFound, exceptions.NotFound("Voting not found"))
 		return
 	}
 

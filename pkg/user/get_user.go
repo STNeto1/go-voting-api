@@ -3,7 +3,7 @@ package user
 import (
 	"net/http"
 
-	"voting/pkg/common/error"
+	"voting/pkg/common/exceptions"
 	"voting/pkg/common/models"
 
 	"github.com/gin-gonic/gin"
@@ -15,7 +15,7 @@ func (h handler) GetUser(c *gin.Context) {
 	var user models.User
 
 	if result := h.DB.First(&user, "id = ?", id); result.Error != nil {
-		c.JSON(http.StatusNotFound, error.NotFound("User was not found"))
+		c.JSON(http.StatusNotFound, exceptions.NotFound("User was not found"))
 		return
 	}
 

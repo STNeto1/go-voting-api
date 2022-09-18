@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"voting/pkg/common/authorization"
-	"voting/pkg/common/error"
+	"voting/pkg/common/exceptions"
 	"voting/pkg/common/models"
 
 	"github.com/gin-gonic/gin"
@@ -16,7 +16,7 @@ func (h handler) GetUserVotings(c *gin.Context) {
 	var votings []models.Voting
 
 	if result := h.DB.Find(&votings).Where("user_id = ?", user.ID); result.Error != nil {
-		c.JSON(http.StatusBadRequest, error.BadRequest("Error fetching votings"))
+		c.JSON(http.StatusBadRequest, exceptions.BadRequest("Error fetching votings"))
 		return
 	}
 

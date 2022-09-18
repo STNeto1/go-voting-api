@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"voting/pkg/common/authorization"
-	"voting/pkg/common/error"
+	"voting/pkg/common/exceptions"
 	"voting/pkg/common/models"
 
 	"github.com/gin-gonic/gin"
@@ -24,7 +24,7 @@ func (h handler) UpdateUser(c *gin.Context) {
 
 	// // getting request's body
 	if err := c.BindJSON(&body); err != nil {
-		c.JSON(http.StatusBadRequest, error.BadRequest("Invalid request body"))
+		c.JSON(http.StatusBadRequest, exceptions.BadRequest("Invalid request body"))
 		return
 	}
 
@@ -36,7 +36,7 @@ func (h handler) UpdateUser(c *gin.Context) {
 		existingUser := models.User{}
 		h.DB.First(&existingUser, "email = ?", body.Email)
 		if existingUser.ID != "" {
-			c.JSON(http.StatusBadRequest, error.BadRequest("Email already in use"))
+			c.JSON(http.StatusBadRequest, exceptions.BadRequest("Email already in use"))
 			return
 		}
 
@@ -46,14 +46,14 @@ func (h handler) UpdateUser(c *gin.Context) {
 	if body.Password != "" {
 		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(body.Password), bcrypt.DefaultCost)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, error.InternalServerError("Internal error"))
+			c.JSON(http.StatusInternalServerError, exceptions.InternalServerError("Internal error"))
 			return
 		}
 		user.Password = string(hashedPassword)
 	}
 
 	if result := h.DB.Save(&user); result.Error != nil {
-		c.JSON(http.StatusInternalServerError, error.InternalServerError("Internal error"))
+		c.JSON(http.StatusInternalServerError, exceptions.InternalServerError("Internal error"))
 		return
 	}
 

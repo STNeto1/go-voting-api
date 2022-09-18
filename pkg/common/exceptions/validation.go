@@ -1,4 +1,4 @@
-package error
+package exceptions
 
 import "github.com/go-playground/validator/v10"
 

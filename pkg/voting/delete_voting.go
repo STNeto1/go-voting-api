@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"voting/pkg/common/authorization"
-	"voting/pkg/common/error"
+	"voting/pkg/common/exceptions"
 	"voting/pkg/common/models"
 
 	"github.com/gin-gonic/gin"
@@ -18,12 +18,12 @@ func (h handler) DeleteVoting(c *gin.Context) {
 
 	var voting models.Voting
 	if err := h.DB.First(&voting, "id = ? AND user_id = ?", id, user.ID).Error; err != nil {
-		c.JSON(http.StatusNotFound, error.NotFound("Voting not found"))
+		c.JSON(http.StatusNotFound, exceptions.NotFound("Voting not found"))
 		return
 	}
 
 	if result := h.DB.Delete(&voting); result.Error != nil {
-		c.JSON(http.StatusInternalServerError, error.InternalServerError("Internal error"))
+		c.JSON(http.StatusInternalServerError, exceptions.InternalServerError("Internal error"))
 		return
 	}
 

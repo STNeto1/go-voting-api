@@ -7,7 +7,7 @@ import (
 	"voting/pkg/common/models"
 
 	"voting/pkg/common/authorization"
-	"voting/pkg/common/error"
+	"voting/pkg/common/exceptions"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
@@ -28,12 +28,12 @@ func (h handler) CreateVoting(c *gin.Context) {
 	if err := c.ShouldBindJSON(&body); err != nil {
 		var ve validator.ValidationErrors
 		if errors.As(err, &ve) {
-			out := make([]error.ApiError, len(ve))
+			out := make([]exceptions.ApiError, len(ve))
 			for i, fe := range ve {
-				out[i] = error.ApiError{Param: fe.Field(), Message: error.MsgForTag(fe)}
+				out[i] = exceptions.ApiError{Param: fe.Field(), Message: exceptions.MsgForTag(fe)}
 			}
 
-			c.JSON(http.StatusBadRequest, error.BadValidation(out))
+			c.JSON(http.StatusBadRequest, exceptions.BadValidation(out))
 			return
 		}
 
@@ -60,7 +60,7 @@ func (h handler) CreateVoting(c *gin.Context) {
 
 	if result := tx.Create(&voting); result.Error != nil {
 		tx.Rollback()
-		c.JSON(http.StatusInternalServerError, error.InternalServerError("Internal error"))
+		c.JSON(http.StatusInternalServerError, exceptions.InternalServerError("Internal error"))
 		return
 	}
 
@@ -74,7 +74,7 @@ func (h handler) CreateVoting(c *gin.Context) {
 
 	if result2 := tx.Create(&options); result2.Error != nil {
 		tx.Rollback()
-		c.JSON(http.StatusInternalServerError, error.InternalServerError("Internal error"))
+		c.JSON(http.StatusInternalServerError, exceptions.InternalServerError("Internal error"))
 		return
 	}
 

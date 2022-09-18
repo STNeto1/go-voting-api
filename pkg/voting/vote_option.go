@@ -6,7 +6,7 @@ import (
 	"time"
 	"voting/pkg/common/models"
 
-	"voting/pkg/common/error"
+	"voting/pkg/common/exceptions"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
@@ -25,12 +25,12 @@ func (h handler) VoteOption(c *gin.Context) {
 	if err := c.ShouldBindJSON(&body); err != nil {
 		var ve validator.ValidationErrors
 		if errors.As(err, &ve) {
-			out := make([]error.ApiError, len(ve))
+			out := make([]exceptions.ApiError, len(ve))
 			for i, fe := range ve {
-				out[i] = error.ApiError{Param: fe.Field(), Message: error.MsgForTag(fe)}
+				out[i] = exceptions.ApiError{Param: fe.Field(), Message: exceptions.MsgForTag(fe)}
 			}
 
-			c.JSON(http.StatusBadRequest, error.BadValidation(out))
+			c.JSON(http.StatusBadRequest, exceptions.BadValidation(out))
 			return
 		}
 
@@ -38,23 +38,23 @@ func (h handler) VoteOption(c *gin.Context) {
 
 	var voting models.Voting
 	if err := h.DB.First(&voting, "id = ?", body.Voting).Error; err != nil {
-		c.JSON(http.StatusNotFound, error.NotFound("Voting not found"))
+		c.JSON(http.StatusNotFound, exceptions.NotFound("Voting not found"))
 		return
 	}
 
 	if time.Now().Before(voting.Start) {
-		c.JSON(http.StatusBadRequest, error.BadRequest("Voting has not started"))
+		c.JSON(http.StatusBadRequest, exceptions.BadRequest("Voting has not started"))
 		return
 	}
 
 	if time.Now().After(voting.End) {
-		c.JSON(http.StatusBadRequest, error.BadRequest("Voting has ended"))
+		c.JSON(http.StatusBadRequest, exceptions.BadRequest("Voting has ended"))
 		return
 	}
 
 	var option models.VotingOption
 	if err := h.DB.First(&option, "id = ? AND voting_id = ?", body.Option, body.Voting).Error; err != nil {
-		c.JSON(http.StatusNotFound, error.NotFound("Option not found"))
+		c.JSON(http.StatusNotFound, exceptions.NotFound("Option not found"))
 		return
 	}
 
